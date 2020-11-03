@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "load_pkl", "load_pkl\load_pkl.pyproj", "{93FA56EE-DAF3-487B-8670-633920FCC73E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93FA56EE-DAF3-487B-8670-633920FCC73E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93FA56EE-DAF3-487B-8670-633920FCC73E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {852177AB-93D0-412C-8C62-F40ACCDF9C75}
+	EndGlobalSection
+EndGlobal
