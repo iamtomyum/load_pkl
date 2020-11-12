@@ -55,18 +55,14 @@ def get_spin_joint_names():
         'rear',           # 48 'Right Ear', # 48
     ]
 
-output =joblib.load('vibe_output_yhh.pkl')
 #print(output.keys(),type(output))
 #得到3d坐标的维度和numpy数组
 def dimension(demand):
     for k,v in output[1].items(): 
         #查看维度
         #print(k,v.shape)
-        if k==demand=='joints3d':
+        if k==demand:
             return v
-
-#x保存整个视频所需要的三维坐标
-x=dimension('joints3d')
 
 #输出所有帧数的所有坐标值
 def All_Coordinate():
@@ -109,6 +105,37 @@ def getAngle():
     for i in range(x.shape[0]):
         #每一帧的肘关节角度
         #print("Frame:{0},L:{1},R:{2}".format(i,cal_ang(x[i][5],x[i][6],x[i][7]),cal_ang(x[i][2],x[i][3],x[i][4])))
-        file.write("Frame:{0},L:{1},R:{2}".format(i,cal_ang(x[i][5],x[i][6],x[i][7]),cal_ang(x[i][2],x[i][3],x[i][4])))
+        file.write("Frame:{0},L:{1},R:{2}\n".format(i,cal_ang(x[i][5],x[i][6],x[i][7]),cal_ang(x[i][2],x[i][3],x[i][4])))
     print("Work done")
-getAngle()
+
+
+def getJointID(jointName):
+    return get_spin_joint_names().index(jointName)
+
+def getThreeJointsAngle(jointsName1, jointsName2, jointsName3):
+    '''
+    返回肢体三点角度
+    :param jointsName1: 肢体名称1
+    :param jointsName1: 肢体名称2
+    :param jointsName1: 肢体名称3
+    :return: 返回1-2-3形成的肢体角度
+    '''
+    IDs = [getJointID(jointsName1),getJointID(jointsName2),getJointID(jointsName3)]
+    res = []
+    for i in range(x.shape[0]):
+        res.append(cal_ang(x[i][IDs[0]],x[i][IDs[1]],x[i][IDs[2]]))
+    return res
+
+def write2File(fileName, frameAngleList):
+    file = open(fileName, "w")
+    for i in range(len(frameAngleList)):
+        file.write(str(i) + ' ' + str(frameAngleList[i]) + '\n')
+
+if __name__ == "__main__":
+    #x保存整个视频所需要的三维坐标
+    pklName = 'vibe_output_yhh.pkl'
+    output =joblib.load(pklName)
+    x=dimension('joints3d')
+    write2File('test2.txt',
+        getThreeJointsAngle('OP RShoulder','OP LShoulder','OP LElbow')
+    ) 
