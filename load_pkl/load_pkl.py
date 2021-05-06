@@ -57,7 +57,7 @@ def get_spin_joint_names():
 
 #print(output.keys(),type(output))
 #得到3d坐标的维度和numpy数组
-def dimension(demand):
+def dimension(demand,output):
     for k,v in output[1].items(): 
         #查看维度
         #print(k,v.shape)
@@ -65,7 +65,7 @@ def dimension(demand):
             return v
 
 #输出所有帧数的所有坐标值
-def All_Coordinate():
+def All_Coordinate(x):
     file = open("1.txt", "w")
     
     for i in range(x.shape[0]):
@@ -100,7 +100,7 @@ def cal_ang(point_1, point_2, point_3):
  
 #print(cal_ang((0, 0, 0), (1, 1, 1), (0, 1, 1)))
 
-def getAngle():
+def getAngle(x):
     file = open("2.txt", "w")
     for i in range(x.shape[0]):
         #每一帧的肘关节角度
@@ -112,7 +112,7 @@ def getAngle():
 def getJointID(jointName):
     return get_spin_joint_names().index(jointName)
 
-def getThreeJointsAngle(jointsName1, jointsName2, jointsName3):
+def getThreeJointsAngle(jointsName1, jointsName2, jointsName3,x):
     '''
     返回肢体三点角度
     :param jointsName1: 肢体名称1
@@ -131,11 +131,39 @@ def write2File(fileName, frameAngleList):
     for i in range(len(frameAngleList)):
         file.write(str(i) + ' ' + str(frameAngleList[i]) + '\n')
 
+def findMin(a,b):
+    if a>b:
+        return b
+    elif a<b:
+        return a
+    else:
+        return a
+def angle_bias(standard,test):
+    min=findMin(len(standard),len(test))
+    bias=[]
+    for i in range(min):
+        bias.append(abs(standard[i]-test[i]))
+    return bias
+
 if __name__ == "__main__":
     #x保存整个视频所需要的三维坐标
-    pklName = 'vibe_output_yhh.pkl'
-    output =joblib.load(pklName)
-    x=dimension('joints3d')
-    write2File('test2.txt',
-        getThreeJointsAngle('OP RShoulder','OP LShoulder','OP LElbow')
-    ) 
+    pklName1 = 'standard.pkl'
+    pklName2 = 'test.pkl'
+    output1 =joblib.load(pklName1)
+    output2=joblib.load(pklName2)
+    coordinates1=dimension('joints3d',output1)
+    coordinates2=dimension('joints3d',output2)
+    
+    angle1=getThreeJointsAngle('OP RShoulder','OP LShoulder','OP LElbow',coordinates1)
+    angle2=getThreeJointsAngle('OP RShoulder','OP LShoulder','OP LElbow',coordinates2)
+    bias=angle_bias(angle1,angle2)
+
+    angle3=getThreeJointsAngle('OP LShoulder','OP LElbow','OP LWrist',coordinates1)
+    angle4=getThreeJointsAngle('OP LShoulder','OP LElbow','OP LWrist',coordinates2)
+    bias2=angle_bias(angle3,angle4)
+
+    for i in range(len(bias)):
+        print(str(angle1[i])+" "+str(angle2[i])+" "+str(bias[i]))
+        
+    
+    
