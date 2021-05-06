@@ -145,6 +145,39 @@ def angle_bias(standard,test):
         bias.append(abs(standard[i]-test[i]))
     return bias
 
+def judgeArms(coor1,coor2):
+    LArm=getThreeJointsAngle('OP LShoulder','OP LElbow','OP LWrist',coor1)
+    RArm=getThreeJointsAngle('OP RShoulder','OP RElbow','OP RWrist',coor1)
+   
+    LArm_t=getThreeJointsAngle('OP LShoulder','OP LElbow','OP LWrist',coor2)
+    RArm_t=getThreeJointsAngle('OP RShoulder','OP RElbow','OP RWrist',coor2)
+    
+    for i in range(findMin(len(LArm),len(RArm))):
+        print("Frame{0}:".format(i)+"左手臂"+str(defineGrade(LArm[i],LArm_t[i]))+" 右手臂"+str(defineGrade(RArm[i],RArm_t[i])))
+
+def defineGrade(num1,num2):
+    if abs(num1-num2)>=0 and abs(num1-num2)<=4:
+        return "动作标准"
+    elif abs(num1-num2)<10:
+        if num1-num2>0:
+            return "动作较好，但角度较标准值小"
+        else:
+            return "动作较好，但角度较标准值大"
+    else:
+        if num1-num2>0:
+            return "动作不标准，角度过小"
+        else:
+            return "动作不标准，角度过大"
+def judgeShoulder(coor1,coor2):
+    LShoulder=getThreeJointsAngle('OP RShoulder','OP LShoulder','OP LElbow',coor1)
+    RShoulder=getThreeJointsAngle('OP LShoulder','OP RShoulder','OP RElbow',coor1)
+
+    LShoulder_t=getThreeJointsAngle('OP RShoulder','OP LShoulder','OP LElbow',coor2)
+    RShoulder_t=getThreeJointsAngle('OP LShoulder','OP RShoulder','OP RElbow',coor2)
+
+    for i in range(findMin(len(LShoulder),len(RShoulder))):
+        print("Frame{0}:".format(i)+"左肩膀"+str(defineGrade(LShoulder[i],LShoulder_t[i]))+" 右肩膀"+str(defineGrade(RShoulder[i],RShoulder_t[i])))
+
 if __name__ == "__main__":
     #x保存整个视频所需要的三维坐标
     pklName1 = 'standard.pkl'
@@ -162,8 +195,8 @@ if __name__ == "__main__":
     angle4=getThreeJointsAngle('OP LShoulder','OP LElbow','OP LWrist',coordinates2)
     bias2=angle_bias(angle3,angle4)
 
-    for i in range(len(bias)):
-        print(str(angle1[i])+" "+str(angle2[i])+" "+str(bias[i]))
-        
+    judgeArms(coordinates1,coordinates2)
+    
+    #judgeShoulder(coordinates1,coordinates2)
     
     
